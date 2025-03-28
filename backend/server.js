@@ -1,18 +1,37 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
+const connectDB = require("../database/config/db");
+const authRoutes = require("./routes/auth");
+
+require("dotenv").config();
 
 const app = express();
-const PORT = 5000;
 
-app.use(cors());
+// Middleware
 app.use(express.json());
-app.use(express.static("public")); // Serve static files from "public/" folder
+app.use(cors());
 
-// Import Routes
-const authRoutes = require("./routes/auth");
+// Connect to MongoDB
+connectDB();
+
+// Serve static files (frontend)
+app.use(express.static(path.join(__dirname, "public")));
+
+// Routes
 app.use("/auth", authRoutes);
 
-// Start Server
-app.listen(PORT, () => {
-    console.log(`✅ Server is running on http://localhost:${PORT}`);
+// Default Route to Serve HTML File
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
 });
+
+// Error Handling Middleware
+app.use((err, req, res, next) => {
+    console.error("❌ Server Error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+});
+
+// Start the server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
