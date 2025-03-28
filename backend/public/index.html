@@ -13,21 +13,73 @@
         <button type="submit">Register</button>
     </form>
 
+    <p id="message" style="color: red; display: none;"></p> <!-- Message display -->
+
+    <h2>Check Registered Users</h2>
+    <button id="fetchUsers">Get Users</button>
+    <ul id="userList"></ul> <!-- List to show users -->
+
     <script>
         document.getElementById("registerForm").addEventListener("submit", async (event) => {
             event.preventDefault(); // Prevent page reload
 
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
+            const username = document.getElementById("username").value.trim();
+            const password = document.getElementById("password").value.trim();
+            const messageElement = document.getElementById("message");
 
-            const response = await fetch("http://localhost:5000/auth/register", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username, password })
-            });
+            // Basic validation
+            if (username.length < 3 || password.length < 6) {
+                messageElement.style.color = "red";
+                messageElement.textContent = "Username must be at least 3 characters, and password at least 6.";
+                messageElement.style.display = "block";
+                return;
+            }
 
-            const result = await response.json();
-            alert(result.message);
+            try {
+                const response = await fetch("http://localhost:5000/auth/register", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ username, password })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    messageElement.style.color = "green";
+                    messageElement.textContent = result.message || "Registration successful!";
+                } else {
+                    messageElement.style.color = "red";
+                    messageElement.textContent = result.message || "Registration failed.";
+                }
+            } catch (error) {
+                messageElement.style.color = "red";
+                messageElement.textContent = "Server error. Please try again later.";
+            }
+
+            messageElement.style.display = "block";
+        });
+
+        // Fetch and display users
+        document.getElementById("fetchUsers").addEventListener("click", async () => {
+            const userList = document.getElementById("userList");
+            userList.innerHTML = ""; // Clear previous results
+
+            try {
+                const response = await fetch("http://localhost:5000/auth/users");
+                const users = await response.json();
+
+                if (response.ok) {
+                    users.forEach(user => {
+                        const li = document.createElement("li");
+                        li.textContent = `${user.username}`;
+                        userList.appendChild(li);
+                    });
+                } else {
+                    alert("Failed to fetch users.");
+                }
+            } catch (error) {
+                alert("Server error.");
+            }
         });
     </script>
 </body>
