@@ -1,0 +1,101 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    height: 40vmin;
+    pointer-events: none;
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background: linear-gradient(135deg, #007bff, #6610f2);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(12px + 1.5vmin);
+  color: white;
+  box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.App-link {
+  color: #61dafb;
+  text-decoration: none;
+  font-weight: bold;
+  transition: color 0.3s ease-in-out;
+}
+.App-link:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+/* Contact Card Styling */
+.contact-card {
+  width: 90%;
+  max-width: 400px;
+  background: white;
+  border-radius: 12px;
+  padding: 15px;
+  margin: 10px 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 2px 4px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease-in-out;
+}
+
+.contact-card:hover {
+  transform: scale(1.03);
+  box-shadow: 4px 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* Contact Avatar */
+.contact-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2px solid #007bff;
+  padding: 3px;
+}
+
+/* Delete Icon */
+.delete-icon {
+  cursor: pointer;
+  font-size: 20px;
+  color: red;
+  transition: transform 0.2s ease-in-out, color 0.3s ease-in-out;
+}
+
+.delete-icon:hover {
+  color: darkred;
+  transform: scale(1.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .App-header {
+    font-size: calc(10px + 1vmin);
+  }
+
+  .contact-card {
+    width: 95%;
+    padding: 10px;
+  }
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
