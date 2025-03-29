@@ -10,6 +10,8 @@
     <form id="registerForm">
         <input type="text" id="username" placeholder="Username" required>
         <input type="password" id="password" placeholder="Password" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="text" id="phone" placeholder="Phone Number" required>
         <button type="submit">Register</button>
     </form>
 
@@ -25,12 +27,14 @@
 
             const username = document.getElementById("username").value.trim();
             const password = document.getElementById("password").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const phone = document.getElementById("phone").value.trim();
             const messageElement = document.getElementById("message");
 
             // Basic validation
-            if (username.length < 3 || password.length < 6) {
+            if (username.length < 3 || password.length < 6 || !email.includes("@") || phone.length < 10) {
                 messageElement.style.color = "red";
-                messageElement.textContent = "Username must be at least 3 characters, and password at least 6.";
+                messageElement.textContent = "Invalid input. Check username, password, email, and phone number.";
                 messageElement.style.display = "block";
                 return;
             }
@@ -39,7 +43,7 @@
                 const response = await fetch("http://localhost:5000/auth/register", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ username, password })
+                    body: JSON.stringify({ username, password, email, phone })
                 });
 
                 const result = await response.json();
@@ -71,7 +75,7 @@
                 if (response.ok) {
                     users.forEach(user => {
                         const li = document.createElement("li");
-                        li.textContent = `${user.username}`;
+                        li.textContent = `${user.name} - ${user.email} - ${user.phone}`;
                         userList.appendChild(li);
                     });
                 } else {
