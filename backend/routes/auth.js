@@ -1,5 +1,6 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken"); // Add this import
 const User = require("../../database/models/userModel"); // Import updated User model
 
 const router = express.Router();
@@ -34,6 +35,31 @@ router.get("/users", async (req, res) => {
     try {
         const users = await User.find({}, "username email phone"); // Return username, email, and phone
         res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: "Server error", error: error.message });
+    }
+});
+
+// User Login
+router.post("/login", async (req, res) => {
+    try {
+        const { username, password } = req.body;
+        if (!username || !password) {
+            return res.status(400).json({ message: "All fields are required" });
+        }
+
+        // Find user in MongoDB
+        const user = await User.findOne({ username });
+        if (!user) return res.status(400).json({ message: "Invalid credentials" });
+
+        // Check password
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+
+        // Generate JWT token
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1h" });
+
+        res.json({ message: "Login successful!", token });
     } catch (error) {
         res.status(500).json({ message: "Server error", error: error.message });
     }
